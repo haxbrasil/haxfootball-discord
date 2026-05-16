@@ -13,6 +13,8 @@ import type {
   AccountRegistrationGateway
 } from "../features/account-registration/application/account-registration-gateway";
 import type { Result } from "../core/result";
+import type { DiscordPermissionGateway } from "../features/discord-permissions/application/discord-permission-gateway";
+import { hasDiscordPermission } from "../features/discord-permissions/domain/discord-permissions";
 
 type AccountsResource = {
   list(query?: PaginationQuery): Promise<ApiResult<ListAccountsResponse>>;
@@ -27,7 +29,8 @@ export function createHaxFootballServices(config: Config) {
   });
 
   return {
-    accountRegistration: createAccountRegistrationGateway(api.accounts)
+    accountRegistration: createAccountRegistrationGateway(api.accounts),
+    discordPermissions: createDiscordPermissionGateway(api.accounts)
   };
 }
 
@@ -78,6 +81,41 @@ export function createAccountRegistrationGateway(
       return {
         ok: false,
         error: result.error
+      };
+    }
+  };
+}
+
+export function createDiscordPermissionGateway(
+  accounts: AccountsResource
+): DiscordPermissionGateway {
+  return {
+    async hasPermission(input) {
+      const accountResult = await findAccountByDiscordUserId(
+        accounts,
+        input.discordUserId
+      );
+
+      if (!accountResult.ok) {
+        if (accountResult.error.kind === "account_not_found") {
+          return {
+            ok: true,
+            data: false
+          };
+        }
+
+        return {
+          ok: false,
+          error: accountResult.error
+        };
+      }
+
+      return {
+        ok: true,
+        data: hasDiscordPermission(
+          accountResult.data.role.permissions,
+          input.permission
+        )
       };
     }
   };

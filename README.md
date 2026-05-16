@@ -69,6 +69,10 @@ run:
 - `image_url`
 - `thumbnail_url`
 
+Posting the registration panel is authorized by HaxFootball API account role
+permissions, not Discord guild permissions. The user must have
+`discord:manager`; `discord:all` bypasses Discord bot permission checks.
+
 User-facing Discord text is localized with Lingui. Source strings and tests use
 English; production should set `LANGUAGE=pt`.
 

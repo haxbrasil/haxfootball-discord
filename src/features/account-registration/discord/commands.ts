@@ -1,5 +1,4 @@
 import {
-  PermissionFlagsBits,
   SlashCommandBuilder,
   type RESTPostAPIChatInputApplicationCommandsJSONBody
 } from "discord.js";
@@ -10,7 +9,6 @@ export function registrationPanelCommand(): RESTPostAPIChatInputApplicationComma
   return new SlashCommandBuilder()
     .setName(accountRegistrationIds.postPanelCommand.command)
     .setDescription(accountRegistrationMessages.adminCommandDescription())
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addSubcommand((subcommand) =>
       subcommand
         .setName(accountRegistrationIds.postPanelCommand.subcommand)

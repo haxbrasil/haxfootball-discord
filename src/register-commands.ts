@@ -17,6 +17,11 @@ const application = createBotApplication(createModules(), {
       async resetPassword() {
         throw new Error("Command deployment does not use API services");
       }
+    },
+    discordPermissions: {
+      async hasPermission() {
+        throw new Error("Command deployment does not use API services");
+      }
     }
   },
   logger: consoleLogger

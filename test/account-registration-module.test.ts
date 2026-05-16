@@ -5,6 +5,7 @@ import type { AppContext } from "../src/core/app-context";
 import { createInteractionRouter } from "../src/core/interaction-router";
 import { createAccountRegistrationModule } from "../src/features/account-registration/account-registration.module";
 import { accountRegistrationIds } from "../src/features/account-registration/discord/custom-ids";
+import { discordPermissions } from "../src/features/discord-permissions/domain/discord-permissions";
 
 describe("account registration module", () => {
   it("posts the registration panel from the admin command", async () => {
@@ -15,8 +16,7 @@ describe("account registration module", () => {
     await router.handle(
       fakeChatInputCommand({
         channel: { send },
-        reply,
-        memberPermissions: { has: () => true }
+        reply
       }),
       contextFixture()
     );
@@ -52,7 +52,6 @@ describe("account registration module", () => {
       fakeChatInputCommand({
         channel: { send },
         reply,
-        memberPermissions: { has: () => true },
         options: {
           getSubcommand: () =>
             accountRegistrationIds.postPanelCommand.subcommand,
@@ -85,6 +84,55 @@ describe("account registration module", () => {
     });
     expect(panel.components[0].components[1].data).toMatchObject({
       label: "Change password"
+    });
+  });
+
+  it("requires the Discord manager API permission to post the registration panel", async () => {
+    const send = vi.fn();
+    const reply = vi.fn();
+    const hasPermission = vi.fn(async () => ({
+      ok: true as const,
+      data: false
+    }));
+    const router = routerFixture();
+
+    await router.handle(
+      fakeChatInputCommand({
+        channel: { send },
+        reply
+      }),
+      contextFixture({ hasPermission })
+    );
+
+    expect(hasPermission).toHaveBeenCalledWith({
+      discordUserId: "123456789012345678",
+      permission: discordPermissions.manager
+    });
+    expect(send).not.toHaveBeenCalled();
+    expect(reply).toHaveBeenCalledWith({
+      content: "You do not have permission to post the registration panel.",
+      flags: MessageFlags.Ephemeral
+    });
+  });
+
+  it("does not use Discord guild permissions for the registration panel", async () => {
+    const send = vi.fn();
+    const reply = vi.fn();
+    const router = routerFixture();
+
+    await router.handle(
+      fakeChatInputCommand({
+        channel: { send },
+        memberPermissions: { has: () => false },
+        reply
+      }),
+      contextFixture()
+    );
+
+    expect(send).toHaveBeenCalledOnce();
+    expect(reply).toHaveBeenCalledWith({
+      content: "Registration panel posted.",
+      flags: MessageFlags.Ephemeral
     });
   });
 
@@ -238,7 +286,9 @@ function fakeChatInputCommand(
       getString: () => null
     },
     inGuild: () => true,
-    memberPermissions: { has: () => true },
+    user: {
+      id: "123456789012345678"
+    },
     ...overrides
   } as unknown as Interaction;
 }
@@ -309,16 +359,24 @@ function contextFixture({
   },
   resetPassword = async () => {
     throw new Error("not implemented");
-  }
+  },
+  hasPermission = async () => ({
+    ok: true,
+    data: true
+  })
 }: {
   createAccount?: AppContext["haxFootball"]["accountRegistration"]["createAccount"];
   resetPassword?: AppContext["haxFootball"]["accountRegistration"]["resetPassword"];
+  hasPermission?: AppContext["haxFootball"]["discordPermissions"]["hasPermission"];
 } = {}): AppContext {
   return {
     haxFootball: {
       accountRegistration: {
         createAccount,
         resetPassword
+      },
+      discordPermissions: {
+        hasPermission
       }
     },
     logger: {

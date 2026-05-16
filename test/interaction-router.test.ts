@@ -96,6 +96,14 @@ function contextFixture(overrides: Partial<AppContext> = {}): AppContext {
         async resetPassword() {
           throw new Error("not implemented");
         }
+      },
+      discordPermissions: {
+        async hasPermission() {
+          return {
+            ok: true,
+            data: false
+          };
+        }
       }
     },
     logger: {

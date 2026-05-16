@@ -1,9 +1,6 @@
-import {
-  type ChatInputCommandInteraction,
-  MessageFlags,
-  PermissionFlagsBits
-} from "discord.js";
+import { type ChatInputCommandInteraction, MessageFlags } from "discord.js";
 import type { InteractionHandler } from "../../../core/interaction-router";
+import { discordPermissions } from "../../discord-permissions/domain/discord-permissions";
 import { accountRegistrationIds } from "./custom-ids";
 import {
   registrationPanelMessage,
@@ -26,15 +23,34 @@ export const postRegistrationPanelHandler: InteractionHandler = {
         accountRegistrationIds.postPanelCommand.subcommand
     );
   },
-  async execute(interaction) {
+  async execute(interaction, context) {
     if (!interaction.isChatInputCommand()) {
       return;
     }
 
-    if (
-      !interaction.inGuild() ||
-      !interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)
-    ) {
+    if (!interaction.inGuild()) {
+      await interaction.reply({
+        content: accountRegistrationMessages.permissionDenied(),
+        flags: MessageFlags.Ephemeral
+      });
+
+      return;
+    }
+
+    const permissionResult =
+      await context.haxFootball.discordPermissions.hasPermission({
+        discordUserId: interaction.user.id,
+        permission: discordPermissions.manager
+      });
+
+    if (!permissionResult.ok) {
+      context.logger.warn("Failed to check Discord management permission", {
+        discordUserId: interaction.user.id,
+        error: permissionResult.error
+      });
+    }
+
+    if (!permissionResult.ok || !permissionResult.data) {
       await interaction.reply({
         content: accountRegistrationMessages.permissionDenied(),
         flags: MessageFlags.Ephemeral
