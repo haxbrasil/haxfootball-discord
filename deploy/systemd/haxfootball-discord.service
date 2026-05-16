@@ -1,0 +1,20 @@
+[Unit]
+Description=BFL Discord bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/haxfootball-discord
+Environment=NODE_ENV=production
+EnvironmentFile=/home/ubuntu/haxfootball-discord/.env.production
+ExecStart=/home/ubuntu/.nvm/versions/node/v22.20.0/bin/node /home/ubuntu/haxfootball-discord/dist/index.mjs
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

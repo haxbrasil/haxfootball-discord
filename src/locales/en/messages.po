@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-05-16 15:29-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:33
+msgid "discord.accountRegistration.modal.name.label"
+msgstr "Account name"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:85
+msgid "discord.accountRegistration.created"
+msgstr "Account registered as {name}."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:13
+msgid "discord.accountRegistration.panel.title"
+msgstr "BFL Account Registration"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:53
+msgid "discord.accountRegistration.command.admin.description"
+msgstr "BFL admin tools"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:43
+msgid "discord.accountRegistration.passwordReset.modal.title"
+msgstr "Change password"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:7
+msgid "discord.accountRegistration.panel.content"
+msgstr "Click the button below to create your BFL account and link it to Discord."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:23
+msgid "discord.accountRegistration.panel.passwordResetButton"
+msgstr "Forgot my password"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:103
+msgid "discord.accountRegistration.invalidInput"
+msgstr "Invalid account name or password. Names must be 1-25 characters, and passwords must be 4-19 characters."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:136
+msgid "discord.accountRegistration.passwordReset.invalidInput"
+msgstr "Invalid password. Passwords must be 4-19 characters."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:48
+msgid "discord.accountRegistration.passwordReset.modal.password.label"
+msgstr "New password"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:38
+msgid "discord.accountRegistration.modal.password.label"
+msgstr "Password"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:141
+msgid "discord.accountRegistration.passwordReset.unauthorized"
+msgstr "Password reset is not configured correctly. Contact an admin."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:146
+msgid "discord.accountRegistration.passwordReset.unavailable"
+msgstr "Password reset is temporarily unavailable. Try again later."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:123
+msgid "discord.accountRegistration.passwordReset.updated"
+msgstr "Password updated."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:58
+msgid "discord.accountRegistration.command.panel.description"
+msgstr "Post the account registration panel"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:18
+msgid "discord.accountRegistration.panel.button"
+msgstr "Register account"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:28
+msgid "discord.accountRegistration.modal.title"
+msgstr "Register account"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:109
+msgid "discord.accountRegistration.unauthorized"
+msgstr "Registration is not configured correctly. Contact an admin."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:114
+msgid "discord.accountRegistration.unavailable"
+msgstr "Registration is temporarily unavailable. Try again later."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:73
+msgid "discord.accountRegistration.admin.panelPosted"
+msgstr "Registration panel posted."
+
+#. js-lingui-explicit-id
+#: src/discord/messages.ts:5
+msgid "discord.common.unexpectedError"
+msgstr "Something went wrong. Try again later."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:93
+msgid "discord.accountRegistration.nameTaken"
+msgstr "That account name is already taken."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:68
+msgid "discord.accountRegistration.admin.unsupportedChannel"
+msgstr "This channel cannot receive the registration panel."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:63
+msgid "discord.accountRegistration.admin.permissionDenied"
+msgstr "You do not have permission to post the registration panel."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:98
+msgid "discord.accountRegistration.discordAccountTaken"
+msgstr "Your Discord account is already linked to a BFL account."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:131
+msgid "discord.accountRegistration.passwordReset.accountNotFound"
+msgstr "Your Discord account is not linked to a BFL account yet."

@@ -1,0 +1,144 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-05-16 15:29-0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: pt\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:33
+msgid "discord.accountRegistration.modal.name.label"
+msgstr "Nome da conta"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:85
+msgid "discord.accountRegistration.created"
+msgstr "Conta registrada como {name}."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:13
+msgid "discord.accountRegistration.panel.title"
+msgstr "Cadastro de conta da BFL"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:53
+msgid "discord.accountRegistration.command.admin.description"
+msgstr "Ferramentas administrativas da BFL"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:43
+msgid "discord.accountRegistration.passwordReset.modal.title"
+msgstr "Alterar senha"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:7
+msgid "discord.accountRegistration.panel.content"
+msgstr "Clique no botão abaixo para criar sua conta da BFL e vinculá-la ao Discord."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:23
+msgid "discord.accountRegistration.panel.passwordResetButton"
+msgstr "Esqueci minha senha"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:103
+msgid "discord.accountRegistration.invalidInput"
+msgstr "Nome de conta ou senha inválidos. Nomes devem ter de 1 a 25 caracteres, e senhas devem ter de 4 a 19 caracteres."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:136
+msgid "discord.accountRegistration.passwordReset.invalidInput"
+msgstr "Senha inválida. Senhas devem ter de 4 a 19 caracteres."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:48
+msgid "discord.accountRegistration.passwordReset.modal.password.label"
+msgstr "Nova senha"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:38
+msgid "discord.accountRegistration.modal.password.label"
+msgstr "Senha"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:141
+msgid "discord.accountRegistration.passwordReset.unauthorized"
+msgstr "A redefinição de senha não está configurada corretamente. Fale com um admin."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:146
+msgid "discord.accountRegistration.passwordReset.unavailable"
+msgstr "A redefinição de senha está temporariamente indisponível. Tente novamente mais tarde."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:123
+msgid "discord.accountRegistration.passwordReset.updated"
+msgstr "Senha atualizada."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:58
+msgid "discord.accountRegistration.command.panel.description"
+msgstr "Publica o painel de cadastro de contas"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:18
+msgid "discord.accountRegistration.panel.button"
+msgstr "Registrar conta"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:28
+msgid "discord.accountRegistration.modal.title"
+msgstr "Registrar conta"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:109
+msgid "discord.accountRegistration.unauthorized"
+msgstr "O cadastro não está configurado corretamente. Fale com um admin."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:114
+msgid "discord.accountRegistration.unavailable"
+msgstr "O cadastro está temporariamente indisponível. Tente novamente mais tarde."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:73
+msgid "discord.accountRegistration.admin.panelPosted"
+msgstr "Painel de cadastro publicado."
+
+#. js-lingui-explicit-id
+#: src/discord/messages.ts:5
+msgid "discord.common.unexpectedError"
+msgstr "Algo deu errado. Tente novamente mais tarde."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:93
+msgid "discord.accountRegistration.nameTaken"
+msgstr "Esse nome de conta já está em uso."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:68
+msgid "discord.accountRegistration.admin.unsupportedChannel"
+msgstr "Este canal não pode receber o painel de cadastro."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:63
+msgid "discord.accountRegistration.admin.permissionDenied"
+msgstr "Você não tem permissão para publicar o painel de cadastro."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:98
+msgid "discord.accountRegistration.discordAccountTaken"
+msgstr "Sua conta do Discord já está vinculada a uma conta da BFL."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:131
+msgid "discord.accountRegistration.passwordReset.accountNotFound"
+msgstr "Sua conta do Discord ainda não está vinculada a uma conta da BFL."
