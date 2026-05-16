@@ -7,6 +7,7 @@ Discord bot for the BFL community.
 ```sh
 pnpm install
 cp .env.example .env
+pnpm run build
 pnpm run commands:deploy
 pnpm run dev
 ```

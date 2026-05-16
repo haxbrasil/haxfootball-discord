@@ -10,7 +10,7 @@
     "dev": "tsx src/index.ts",
     "build": "tsdown --config tsdown.config.ts",
     "start": "node dist/index.mjs",
-    "commands:deploy": "tsx src/register-commands.ts",
+    "commands:deploy": "node dist/register-commands.mjs",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "i18n:extract": "lingui extract",
