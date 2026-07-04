@@ -1,4 +1,9 @@
 import { t } from "@lingui/core/macro";
+import type {
+  LiveRegistrationCandidate,
+  LiveRegistrationCommand,
+  LiveRegistrationFailure
+} from "../application/account-registration-gateway";
 import type { RegisterAccountResult } from "../application/register-account";
 import type { ResetPasswordResult } from "../application/reset-password";
 
@@ -73,6 +78,16 @@ export const accountRegistrationMessages = {
     t({
       id: "discord.accountRegistration.admin.panelPosted",
       message: "Registration panel posted."
+    }),
+  liveConfirmationYesButton: () =>
+    t({
+      id: "discord.accountRegistration.liveConfirmation.yesButton",
+      message: "Yes, this is me"
+    }),
+  liveConfirmationNoButton: () =>
+    t({
+      id: "discord.accountRegistration.liveConfirmation.noButton",
+      message: "No"
     })
 };
 
@@ -116,6 +131,98 @@ export function registrationReplyMessage(
         message: "Registration is temporarily unavailable. Try again later."
       });
   }
+}
+
+export function liveRegistrationPromptMessage(input: {
+  accountName: string;
+  candidate: LiveRegistrationCandidate;
+  includeCreatedMessage: boolean;
+}): string {
+  const roomName = input.candidate.roomName ?? input.candidate.roomId;
+  const playerName = input.candidate.playerName;
+
+  if (input.includeCreatedMessage) {
+    return t({
+      id: "discord.accountRegistration.liveConfirmation.promptWithCreated",
+      message: `Account registered as ${{ name: input.accountName }}.\nIs this you in ${{ roomName }} as ${{ playerName }}?`
+    });
+  }
+
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.prompt",
+    message: `Is this you in ${{ roomName }} as ${{ playerName }}?`
+  });
+}
+
+export function liveRegistrationLookupUnavailableMessage(input: {
+  accountName: string;
+}): string {
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.lookupUnavailable",
+    message: `Account registered as ${{ name: input.accountName }}. I couldn't check live rooms right now.`
+  });
+}
+
+export function liveRegistrationConfirmingMessage(): string {
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.confirming",
+    message: "Confirming your live room player..."
+  });
+}
+
+export function liveRegistrationConfirmedMessage(
+  command: LiveRegistrationCommand
+): string {
+  if (command.status !== "ACKNOWLEDGED") {
+    return t({
+      id: "discord.accountRegistration.liveConfirmation.sent",
+      message:
+        "Confirmation sent to the room. If you are still blocked, try again in a moment."
+    });
+  }
+
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.confirmed",
+    message: "Confirmed. You are signed in inside the room."
+  });
+}
+
+export function liveRegistrationDeclinedMessage(): string {
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.declined",
+    message: "Skipped this room."
+  });
+}
+
+export function liveRegistrationFailureMessage(
+  error: LiveRegistrationFailure
+): string {
+  if (error.kind === "account_not_found") {
+    return t({
+      id: "discord.accountRegistration.liveConfirmation.accountNotFound",
+      message: "Your Discord account is not linked to a BFL account anymore."
+    });
+  }
+
+  if (error.kind === "live_registration_candidate_not_found") {
+    return t({
+      id: "discord.accountRegistration.liveConfirmation.candidateNotFound",
+      message: "I couldn't find that player in the live room anymore."
+    });
+  }
+
+  if (error.kind === "live_registration_rejected") {
+    return t({
+      id: "discord.accountRegistration.liveConfirmation.rejected",
+      message: "The room could not confirm that player anymore."
+    });
+  }
+
+  return t({
+    id: "discord.accountRegistration.liveConfirmation.unavailable",
+    message:
+      "Live room confirmation is temporarily unavailable. Try again later."
+  });
 }
 
 export function passwordResetReplyMessage(result: ResetPasswordResult): string {

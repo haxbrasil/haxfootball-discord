@@ -41,13 +41,7 @@ describe("discord permissions", () => {
             nextCursor: null
           }
         })
-      ),
-      async create() {
-        throw new Error("not implemented");
-      },
-      async update() {
-        throw new Error("not implemented");
-      }
+      )
     });
 
     await expect(
@@ -71,13 +65,7 @@ describe("discord permissions", () => {
             nextCursor: null
           }
         })
-      ),
-      async create() {
-        throw new Error("not implemented");
-      },
-      async update() {
-        throw new Error("not implemented");
-      }
+      )
     });
 
     await expect(
@@ -119,8 +107,9 @@ function accountFixture({
     role: {
       uuid: crypto.randomUUID(),
       name: "role",
-      title: "Role",
+      title: { value: "Role", label: "Role" },
       permissions,
+      bypassAllPermissions: false,
       isDefault: false,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z"

@@ -1,4 +1,5 @@
 import type { BotModule } from "../../core/bot-module";
+import { confirmLiveRegistrationHandler } from "./discord/confirm-live-registration";
 import { registrationPanelCommand } from "./discord/commands";
 import { openPasswordResetModalHandler } from "./discord/open-password-reset-modal";
 import { openRegistrationModalHandler } from "./discord/open-registration-modal";
@@ -14,6 +15,7 @@ export function createAccountRegistrationModule(): BotModule {
       postRegistrationPanelHandler,
       openRegistrationModalHandler,
       submitRegistrationModalHandler,
+      confirmLiveRegistrationHandler,
       openPasswordResetModalHandler,
       submitPasswordResetModalHandler
     ]

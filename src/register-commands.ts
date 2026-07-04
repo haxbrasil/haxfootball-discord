@@ -14,6 +14,12 @@ const application = createBotApplication(createModules(), {
       async createAccount() {
         throw new Error("Command deployment does not use API services");
       },
+      async findLiveRegistrationCandidates() {
+        throw new Error("Command deployment does not use API services");
+      },
+      async confirmLiveRegistration() {
+        throw new Error("Command deployment does not use API services");
+      },
       async resetPassword() {
         throw new Error("Command deployment does not use API services");
       }

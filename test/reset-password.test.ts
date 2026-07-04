@@ -6,13 +6,12 @@ import type {
 } from "../src/features/account-registration/application/account-registration-gateway";
 import { resetPassword } from "../src/features/account-registration/application/reset-password";
 
+type ResetPasswordGateway = Pick<AccountRegistrationGateway, "resetPassword">;
+
 describe("resetPassword", () => {
   it("changes the password through the gateway", async () => {
     const account = accountFixture({ name: "Player1" });
-    const gateway: AccountRegistrationGateway = {
-      async createAccount() {
-        throw new Error("not implemented");
-      },
+    const gateway: ResetPasswordGateway = {
       async resetPassword(input) {
         expect(input).toEqual({
           discordUserId: "123456789012345678",
@@ -108,11 +107,8 @@ async function expectResetFailure(
 
 function gatewayWithFailure(
   failure: AccountPasswordResetFailure
-): AccountRegistrationGateway {
+): ResetPasswordGateway {
   return {
-    async createAccount() {
-      throw new Error("not implemented");
-    },
     async resetPassword() {
       return {
         ok: false,
@@ -154,8 +150,9 @@ function accountFixture(overrides: Partial<Account> = {}): Account {
     role: {
       uuid: "10000000-0000-4000-8000-000000000000",
       name: "default",
-      title: "Default",
+      title: { value: "Default", label: "Default" },
       permissions: [],
+      bypassAllPermissions: false,
       isDefault: true,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z"

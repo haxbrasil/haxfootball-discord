@@ -93,6 +93,12 @@ function contextFixture(overrides: Partial<AppContext> = {}): AppContext {
         async createAccount() {
           throw new Error("not implemented");
         },
+        async findLiveRegistrationCandidates() {
+          throw new Error("not implemented");
+        },
+        async confirmLiveRegistration() {
+          throw new Error("not implemented");
+        },
         async resetPassword() {
           throw new Error("not implemented");
         }

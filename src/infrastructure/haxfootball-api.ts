@@ -3,14 +3,20 @@ import {
   type Account,
   type ApiResult,
   type CreateAccountInput,
+  type FindPlayersByNameQuery,
   type ListAccountsResponse,
+  type ListRoomCommandsQuery,
   type PaginationQuery,
+  queries,
   type UpdateAccountInput
 } from "@haxbrasil/haxfootball-api-sdk";
 import type { Config } from "../config";
 import type {
   AccountPasswordResetFailure,
-  AccountRegistrationGateway
+  AccountRegistrationGateway,
+  LiveRegistrationCandidate,
+  LiveRegistrationCommand,
+  LiveRegistrationFailure
 } from "../features/account-registration/application/account-registration-gateway";
 import type { Result } from "../core/result";
 import type { DiscordPermissionGateway } from "../features/discord-permissions/application/discord-permission-gateway";
@@ -18,8 +24,23 @@ import { hasDiscordPermission } from "../features/discord-permissions/domain/dis
 
 type AccountsResource = {
   list(query?: PaginationQuery): Promise<ApiResult<ListAccountsResponse>>;
+  getByExternalId(externalId: string): Promise<ApiResult<Account>>;
   create(input: CreateAccountInput): Promise<ApiResult<Account>>;
   update(uuid: string, input: UpdateAccountInput): Promise<ApiResult<Account>>;
+};
+
+type AccountListResource = Pick<AccountsResource, "list">;
+
+type LiveResource = {
+  query<TResult, TVariables>(input: {
+    document: unknown;
+    variables?: TVariables;
+  }): Promise<ApiResult<TResult>>;
+  enqueueRoomCommand(input: {
+    roomId: string;
+    name: string;
+    payload?: unknown;
+  }): Promise<ApiResult<LiveRegistrationCommand>>;
 };
 
 export function createHaxFootballServices(config: Config) {
@@ -29,14 +50,42 @@ export function createHaxFootballServices(config: Config) {
   });
 
   return {
-    accountRegistration: createAccountRegistrationGateway(api.accounts),
+    accountRegistration: createAccountRegistrationGateway(
+      api.accounts,
+      api.live
+    ),
     discordPermissions: createDiscordPermissionGateway(api.accounts)
   };
 }
 
 export function createAccountRegistrationGateway(
-  accounts: AccountsResource
+  accounts: AccountsResource,
+  live?: LiveResource
 ): AccountRegistrationGateway {
+  const findLiveRegistrationCandidates: AccountRegistrationGateway["findLiveRegistrationCandidates"] =
+    async (accountName) => {
+      if (!live) {
+        return { ok: true, data: [] };
+      }
+
+      const result = await live.query<
+        FindPlayersByNameQuery,
+        { playerName: string }
+      >({
+        document: queries.findPlayersByName,
+        variables: { playerName: accountName }
+      });
+
+      if (!result.ok) {
+        return result;
+      }
+
+      return {
+        ok: true,
+        data: liveRegistrationCandidates(result.data)
+      };
+    };
+
   return {
     async createAccount(input) {
       const result = await accounts.create({
@@ -50,6 +99,72 @@ export function createAccountRegistrationGateway(
           ok: true,
           data: result.data
         };
+      }
+
+      return {
+        ok: false,
+        error: result.error
+      };
+    },
+    findLiveRegistrationCandidates,
+    async confirmLiveRegistration(input) {
+      if (!live) {
+        return unavailableLiveRegistration();
+      }
+
+      const accountResult = await accounts.getByExternalId(input.discordUserId);
+
+      if (!accountResult.ok) {
+        if (
+          accountResult.error.kind === "api" &&
+          accountResult.error.status === 404
+        ) {
+          return {
+            ok: false,
+            error: { kind: "account_not_found" }
+          };
+        }
+
+        return {
+          ok: false,
+          error: accountResult.error
+        };
+      }
+
+      const candidatesResult = await findLiveRegistrationCandidates(
+        accountResult.data.name
+      );
+
+      if (!candidatesResult.ok) {
+        return candidatesResult;
+      }
+
+      const candidate = candidatesResult.data.find(
+        (item) =>
+          item.roomId === input.roomId &&
+          item.roomPlayerId === input.roomPlayerId
+      );
+
+      if (!candidate) {
+        return {
+          ok: false,
+          error: { kind: "live_registration_candidate_not_found" }
+        };
+      }
+
+      const result = await live.enqueueRoomCommand({
+        roomId: input.roomId,
+        name: "account-registration.confirm-player",
+        payload: {
+          accountName: accountResult.data.name,
+          accountUuid: accountResult.data.uuid,
+          discordUserId: input.discordUserId,
+          roomPlayerId: input.roomPlayerId
+        }
+      });
+
+      if (result.ok) {
+        return waitForLiveRegistrationCommandResult(live, result.data);
       }
 
       return {
@@ -86,8 +201,89 @@ export function createAccountRegistrationGateway(
   };
 }
 
+async function waitForLiveRegistrationCommandResult(
+  live: LiveResource,
+  command: LiveRegistrationCommand
+): Promise<Result<LiveRegistrationCommand, LiveRegistrationFailure>> {
+  let current = command;
+
+  for (let attempt = 0; attempt < 6; attempt += 1) {
+    if (current.status === "ACKNOWLEDGED") {
+      return { ok: true, data: current };
+    }
+
+    if (current.status === "FAILED") {
+      return {
+        ok: false,
+        error: {
+          kind: "live_registration_rejected",
+          message: "Live room rejected the confirmation"
+        }
+      };
+    }
+
+    await wait(500);
+
+    const result = await live.query<
+      ListRoomCommandsQuery,
+      { roomId: string; first: number }
+    >({
+      document: queries.listRoomCommands,
+      variables: {
+        roomId: command.roomId,
+        first: 20
+      }
+    });
+
+    if (!result.ok) {
+      return result;
+    }
+
+    current =
+      result.data.liveRoomCommands.nodes.find(
+        (item) => item.id === command.id
+      ) ?? current;
+  }
+
+  return { ok: true, data: current };
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function liveRegistrationCandidates(
+  data: FindPlayersByNameQuery
+): LiveRegistrationCandidate[] {
+  return data.liveRooms.nodes.flatMap((room) =>
+    room.players.nodes.map((player) => ({
+      roomId: room.id,
+      roomName: room.room.name,
+      roomPlayerId: player.roomPlayerId,
+      playerName: player.name,
+      team: player.team,
+      gameStatus: room.room.gameStatus,
+      sessionKind: player.sessionKind ?? null
+    }))
+  );
+}
+
+function unavailableLiveRegistration(): Result<
+  LiveRegistrationCommand,
+  LiveRegistrationFailure
+> {
+  return {
+    ok: false,
+    error: {
+      kind: "network",
+      message: "Live registration is not configured",
+      cause: new Error("Live registration is not configured")
+    }
+  };
+}
+
 export function createDiscordPermissionGateway(
-  accounts: AccountsResource
+  accounts: AccountListResource
 ): DiscordPermissionGateway {
   return {
     async hasPermission(input) {
@@ -122,7 +318,7 @@ export function createDiscordPermissionGateway(
 }
 
 async function findAccountByDiscordUserId(
-  accounts: AccountsResource,
+  accounts: AccountListResource,
   discordUserId: string,
   cursor?: string
 ): Promise<Result<Account, AccountPasswordResetFailure>> {

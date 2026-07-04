@@ -4,7 +4,10 @@ import { describe, expect, it, vi } from "vitest";
 import type { AppContext } from "../src/core/app-context";
 import { createInteractionRouter } from "../src/core/interaction-router";
 import { createAccountRegistrationModule } from "../src/features/account-registration/account-registration.module";
-import { accountRegistrationIds } from "../src/features/account-registration/discord/custom-ids";
+import {
+  accountRegistrationIds,
+  liveRegistrationButtonId
+} from "../src/features/account-registration/discord/custom-ids";
 import { discordPermissions } from "../src/features/discord-permissions/domain/discord-permissions";
 
 describe("account registration module", () => {
@@ -178,43 +181,148 @@ describe("account registration module", () => {
   });
 
   it("creates an account from the modal submission", async () => {
-    const reply = vi.fn();
+    const deferReply = vi.fn();
+    const editReply = vi.fn();
     const createAccount = vi.fn(async () => ({
       ok: true as const,
-      data: {
-        uuid: "00000000-0000-4000-8000-000000000000",
-        name: "Player1",
-        externalId: "123456789012345678",
-        role: {
-          uuid: "10000000-0000-4000-8000-000000000000",
-          name: "default",
-          title: "Default",
-          permissions: [],
-          isDefault: true,
-          createdAt: "2026-01-01T00:00:00.000Z",
-          updatedAt: "2026-01-01T00:00:00.000Z"
-        },
-        createdAt: "2026-01-01T00:00:00.000Z",
-        updatedAt: "2026-01-01T00:00:00.000Z"
-      }
+      data: accountFixture()
+    }));
+    const findLiveRegistrationCandidates = vi.fn(async () => ({
+      ok: true as const,
+      data: []
     }));
     const router = routerFixture();
 
     await router.handle(
       fakeModalSubmit({
-        reply
+        deferReply,
+        editReply
       }),
-      contextFixture({ createAccount })
+      contextFixture({ createAccount, findLiveRegistrationCandidates })
     );
 
+    expect(deferReply).toHaveBeenCalledWith({
+      flags: MessageFlags.Ephemeral
+    });
     expect(createAccount).toHaveBeenCalledWith({
       discordUserId: "123456789012345678",
       name: "Player1",
       password: "pass1234"
     });
-    expect(reply).toHaveBeenCalledWith({
-      content: "Account registered as Player1.",
-      flags: MessageFlags.Ephemeral
+    expect(findLiveRegistrationCandidates).toHaveBeenCalledWith("Player1");
+    expect(editReply).toHaveBeenCalledWith({
+      content: "Account registered as Player1."
+    });
+  });
+
+  it("shows live registration confirmation prompts for matching room players", async () => {
+    const deferReply = vi.fn();
+    const editReply = vi.fn();
+    const followUp = vi.fn();
+    const createAccount = vi.fn(async () => ({
+      ok: true as const,
+      data: accountFixture()
+    }));
+    const findLiveRegistrationCandidates = vi.fn(async () => ({
+      ok: true as const,
+      data: [
+        liveRegistrationCandidateFixture({
+          roomId: "00000000-0000-4000-8000-000000000001",
+          roomName: "Main Room",
+          roomPlayerId: 1
+        }),
+        liveRegistrationCandidateFixture({
+          roomId: "00000000-0000-4000-8000-000000000002",
+          roomName: "Second Room",
+          roomPlayerId: 2
+        })
+      ]
+    }));
+    const router = routerFixture();
+
+    await router.handle(
+      fakeModalSubmit({
+        deferReply,
+        editReply,
+        followUp
+      }),
+      contextFixture({ createAccount, findLiveRegistrationCandidates })
+    );
+
+    expect(editReply).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content:
+          "Account registered as Player1.\nIs this you in Main Room as Player1?",
+        components: expect.any(Array)
+      })
+    );
+    expect(followUp).toHaveBeenCalledWith(
+      expect.objectContaining({
+        content: "Is this you in Second Room as Player1?",
+        components: expect.any(Array),
+        flags: MessageFlags.Ephemeral
+      })
+    );
+  });
+
+  it("confirms a matching live room player from the button", async () => {
+    const update = vi.fn();
+    const editReply = vi.fn();
+    const confirmLiveRegistration = vi.fn(async () => ({
+      ok: true as const,
+      data: liveRoomCommandFixture()
+    }));
+    const router = routerFixture();
+
+    await router.handle(
+      fakeButton({
+        customId: liveRegistrationButtonId({
+          action: "confirm",
+          roomId: "00000000-0000-4000-8000-000000000001",
+          roomPlayerId: 1
+        }),
+        update,
+        editReply
+      }),
+      contextFixture({ confirmLiveRegistration })
+    );
+
+    expect(update).toHaveBeenCalledWith({
+      content: "Confirming your live room player...",
+      components: []
+    });
+    expect(confirmLiveRegistration).toHaveBeenCalledWith({
+      discordUserId: "123456789012345678",
+      roomId: "00000000-0000-4000-8000-000000000001",
+      roomPlayerId: 1
+    });
+    expect(editReply).toHaveBeenCalledWith({
+      content: "Confirmed. You are signed in inside the room.",
+      components: []
+    });
+  });
+
+  it("declines a live room player confirmation from the button", async () => {
+    const update = vi.fn();
+    const confirmLiveRegistration = vi.fn();
+    const router = routerFixture();
+
+    await router.handle(
+      fakeButton({
+        customId: liveRegistrationButtonId({
+          action: "decline",
+          roomId: "00000000-0000-4000-8000-000000000001",
+          roomPlayerId: 1
+        }),
+        update
+      }),
+      contextFixture({ confirmLiveRegistration })
+    );
+
+    expect(confirmLiveRegistration).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith({
+      content: "Skipped this room.",
+      components: []
     });
   });
 
@@ -299,6 +407,9 @@ function fakeButton(overrides: Record<string, unknown> = {}): Interaction {
     isButton: () => true,
     isModalSubmit: () => false,
     customId: accountRegistrationIds.openModalButton,
+    user: {
+      id: "123456789012345678"
+    },
     ...overrides
   } as unknown as Interaction;
 }
@@ -357,6 +468,12 @@ function contextFixture({
   createAccount = async () => {
     throw new Error("not implemented");
   },
+  findLiveRegistrationCandidates = async () => {
+    throw new Error("not implemented");
+  },
+  confirmLiveRegistration = async () => {
+    throw new Error("not implemented");
+  },
   resetPassword = async () => {
     throw new Error("not implemented");
   },
@@ -366,6 +483,8 @@ function contextFixture({
   })
 }: {
   createAccount?: AppContext["haxFootball"]["accountRegistration"]["createAccount"];
+  findLiveRegistrationCandidates?: AppContext["haxFootball"]["accountRegistration"]["findLiveRegistrationCandidates"];
+  confirmLiveRegistration?: AppContext["haxFootball"]["accountRegistration"]["confirmLiveRegistration"];
   resetPassword?: AppContext["haxFootball"]["accountRegistration"]["resetPassword"];
   hasPermission?: AppContext["haxFootball"]["discordPermissions"]["hasPermission"];
 } = {}): AppContext {
@@ -373,6 +492,8 @@ function contextFixture({
     haxFootball: {
       accountRegistration: {
         createAccount,
+        findLiveRegistrationCandidates,
+        confirmLiveRegistration,
         resetPassword
       },
       discordPermissions: {
@@ -387,6 +508,45 @@ function contextFixture({
   };
 }
 
+function liveRegistrationCandidateFixture(
+  overrides: Partial<
+    AppContext["haxFootball"]["accountRegistration"]["findLiveRegistrationCandidates"] extends (
+      ...args: never[]
+    ) => Promise<infer TResult>
+      ? TResult extends { ok: true; data: Array<infer TCandidate> }
+        ? TCandidate
+        : never
+      : never
+  > = {}
+) {
+  return {
+    roomId: "00000000-0000-4000-8000-000000000001",
+    roomName: "Main Room",
+    roomPlayerId: 1,
+    playerName: "Player1",
+    team: "RED",
+    gameStatus: "RUNNING",
+    sessionKind: "GUEST",
+    ...overrides
+  };
+}
+
+function liveRoomCommandFixture() {
+  return {
+    id: "10000000-0000-4000-8000-000000000001",
+    roomId: "00000000-0000-4000-8000-000000000001",
+    name: "account-registration.confirm-player",
+    payload: null,
+    status: "ACKNOWLEDGED" as const,
+    result: null,
+    error: null,
+    createdAt: "2026-01-01T00:00:00.000Z",
+    updatedAt: "2026-01-01T00:00:00.000Z",
+    sentAt: "2026-01-01T00:00:00.000Z",
+    completedAt: "2026-01-01T00:00:01.000Z"
+  };
+}
+
 function accountFixture(): Account {
   return {
     uuid: "00000000-0000-4000-8000-000000000000",
@@ -395,8 +555,9 @@ function accountFixture(): Account {
     role: {
       uuid: "10000000-0000-4000-8000-000000000000",
       name: "default",
-      title: "Default",
+      title: { value: "Default", label: "Default" },
       permissions: [],
+      bypassAllPermissions: false,
       isDefault: true,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z"

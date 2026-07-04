@@ -11,7 +11,9 @@ import {
   ModalBuilder,
   TextInputBuilder
 } from "@discordjs/builders";
+import type { LiveRegistrationCandidate } from "../application/account-registration-gateway";
 import { accountRegistrationIds } from "./custom-ids";
+import { liveRegistrationButtonId } from "./custom-ids";
 import { accountRegistrationMessages } from "./messages";
 
 export type RegistrationPanelOptions = {
@@ -110,4 +112,33 @@ export function registrationModal(): ModalBuilder {
             .setRequired(true)
         )
     );
+}
+
+export function liveRegistrationConfirmationComponents(
+  candidate: LiveRegistrationCandidate
+) {
+  return [
+    new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(
+          liveRegistrationButtonId({
+            action: "confirm",
+            roomId: candidate.roomId,
+            roomPlayerId: candidate.roomPlayerId
+          })
+        )
+        .setLabel(accountRegistrationMessages.liveConfirmationYesButton())
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId(
+          liveRegistrationButtonId({
+            action: "decline",
+            roomId: candidate.roomId,
+            roomPlayerId: candidate.roomPlayerId
+          })
+        )
+        .setLabel(accountRegistrationMessages.liveConfirmationNoButton())
+        .setStyle(ButtonStyle.Secondary)
+    )
+  ];
 }

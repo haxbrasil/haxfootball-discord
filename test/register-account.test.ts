@@ -3,10 +3,12 @@ import { describe, expect, it } from "vitest";
 import type { AccountRegistrationGateway } from "../src/features/account-registration/application/account-registration-gateway";
 import { registerAccount } from "../src/features/account-registration/application/register-account";
 
+type RegisterAccountGateway = Pick<AccountRegistrationGateway, "createAccount">;
+
 describe("registerAccount", () => {
   it("creates an account through the gateway", async () => {
     const account = accountFixture({ name: "Player1" });
-    const gateway: AccountRegistrationGateway = {
+    const gateway: RegisterAccountGateway = {
       async createAccount(input) {
         expect(input).toEqual({
           discordUserId: "123456789012345678",
@@ -18,9 +20,6 @@ describe("registerAccount", () => {
           ok: true,
           data: account
         };
-      },
-      async resetPassword() {
-        throw new Error("not implemented");
       }
     };
 
@@ -60,7 +59,7 @@ describe("registerAccount", () => {
   });
 
   it("maps network failures as unavailable", async () => {
-    const gateway: AccountRegistrationGateway = {
+    const gateway: RegisterAccountGateway = {
       async createAccount() {
         return {
           ok: false,
@@ -70,9 +69,6 @@ describe("registerAccount", () => {
             cause: new Error("fetch failed")
           }
         };
-      },
-      async resetPassword() {
-        throw new Error("not implemented");
       }
     };
 
@@ -93,15 +89,12 @@ async function expectRegistrationFailure(
   failure: ApiFailure,
   expected: string
 ): Promise<void> {
-  const gateway: AccountRegistrationGateway = {
+  const gateway: RegisterAccountGateway = {
     async createAccount() {
       return {
         ok: false,
         error: failure
       };
-    },
-    async resetPassword() {
-      throw new Error("not implemented");
     }
   };
 
@@ -149,8 +142,9 @@ function accountFixture(overrides: Partial<Account> = {}): Account {
     role: {
       uuid: "10000000-0000-4000-8000-000000000000",
       name: "default",
-      title: "Default",
+      title: { value: "Default", label: "Default" },
       permissions: [],
+      bypassAllPermissions: false,
       isDefault: true,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-01T00:00:00.000Z"

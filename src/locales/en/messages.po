@@ -14,104 +14,156 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:33
+#: src/features/account-registration/discord/messages.ts:38
 msgid "discord.accountRegistration.modal.name.label"
 msgstr "Account name"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:85
+#: src/features/account-registration/discord/messages.ts:100
 msgid "discord.accountRegistration.created"
 msgstr "Account registered as {name}."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:13
+#: src/features/account-registration/discord/messages.ts:145
+msgid "discord.accountRegistration.liveConfirmation.promptWithCreated"
+msgstr ""
+"Account registered as {name}.\n"
+"Is this you in {roomName} as {playerName}?"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:160
+msgid "discord.accountRegistration.liveConfirmation.lookupUnavailable"
+msgstr "Account registered as {name}. I couldn't check live rooms right now."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:18
 msgid "discord.accountRegistration.panel.title"
 msgstr "BFL Account Registration"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:53
+#: src/features/account-registration/discord/messages.ts:58
 msgid "discord.accountRegistration.command.admin.description"
 msgstr "BFL admin tools"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:43
+#: src/features/account-registration/discord/messages.ts:48
 msgid "discord.accountRegistration.passwordReset.modal.title"
 msgstr "Change password"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:7
+#: src/features/account-registration/discord/messages.ts:12
 msgid "discord.accountRegistration.panel.content"
 msgstr "Click the button below to create your BFL account and link it to Discord."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:23
+#: src/features/account-registration/discord/messages.ts:177
+msgid "discord.accountRegistration.liveConfirmation.sent"
+msgstr "Confirmation sent to the room. If you are still blocked, try again in a moment."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:184
+msgid "discord.accountRegistration.liveConfirmation.confirmed"
+msgstr "Confirmed. You are signed in inside the room."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:167
+msgid "discord.accountRegistration.liveConfirmation.confirming"
+msgstr "Confirming your live room player..."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:28
 msgid "discord.accountRegistration.panel.passwordResetButton"
 msgstr "Forgot my password"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:103
+#: src/features/account-registration/discord/messages.ts:208
+msgid "discord.accountRegistration.liveConfirmation.candidateNotFound"
+msgstr "I couldn't find that player in the live room anymore."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:118
 msgid "discord.accountRegistration.invalidInput"
 msgstr "Invalid account name or password. Names must be 1-25 characters, and passwords must be 4-19 characters."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:136
+#: src/features/account-registration/discord/messages.ts:243
 msgid "discord.accountRegistration.passwordReset.invalidInput"
 msgstr "Invalid password. Passwords must be 4-19 characters."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:48
+#: src/features/account-registration/discord/messages.ts:151
+msgid "discord.accountRegistration.liveConfirmation.prompt"
+msgstr "Is this you in {roomName} as {playerName}?"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:221
+msgid "discord.accountRegistration.liveConfirmation.unavailable"
+msgstr "Live room confirmation is temporarily unavailable. Try again later."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:53
 msgid "discord.accountRegistration.passwordReset.modal.password.label"
 msgstr "New password"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:38
+#: src/features/account-registration/discord/messages.ts:88
+msgid "discord.accountRegistration.liveConfirmation.noButton"
+msgstr "No"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:43
 msgid "discord.accountRegistration.modal.password.label"
 msgstr "Password"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:141
+#: src/features/account-registration/discord/messages.ts:248
 msgid "discord.accountRegistration.passwordReset.unauthorized"
 msgstr "Password reset is not configured correctly. Contact an admin."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:146
+#: src/features/account-registration/discord/messages.ts:253
 msgid "discord.accountRegistration.passwordReset.unavailable"
 msgstr "Password reset is temporarily unavailable. Try again later."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:123
+#: src/features/account-registration/discord/messages.ts:230
 msgid "discord.accountRegistration.passwordReset.updated"
 msgstr "Password updated."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:58
+#: src/features/account-registration/discord/messages.ts:63
 msgid "discord.accountRegistration.command.panel.description"
 msgstr "Post the account registration panel"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:18
+#: src/features/account-registration/discord/messages.ts:23
 msgid "discord.accountRegistration.panel.button"
 msgstr "Register account"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:28
+#: src/features/account-registration/discord/messages.ts:33
 msgid "discord.accountRegistration.modal.title"
 msgstr "Register account"
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:109
+#: src/features/account-registration/discord/messages.ts:124
 msgid "discord.accountRegistration.unauthorized"
 msgstr "Registration is not configured correctly. Contact an admin."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:114
+#: src/features/account-registration/discord/messages.ts:129
 msgid "discord.accountRegistration.unavailable"
 msgstr "Registration is temporarily unavailable. Try again later."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:73
+#: src/features/account-registration/discord/messages.ts:78
 msgid "discord.accountRegistration.admin.panelPosted"
 msgstr "Registration panel posted."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:191
+msgid "discord.accountRegistration.liveConfirmation.declined"
+msgstr "Skipped this room."
 
 #. js-lingui-explicit-id
 #: src/discord/messages.ts:5
@@ -119,26 +171,41 @@ msgid "discord.common.unexpectedError"
 msgstr "Something went wrong. Try again later."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:93
+#: src/features/account-registration/discord/messages.ts:108
 msgid "discord.accountRegistration.nameTaken"
 msgstr "That account name is already taken."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:68
+#: src/features/account-registration/discord/messages.ts:215
+msgid "discord.accountRegistration.liveConfirmation.rejected"
+msgstr "The room could not confirm that player anymore."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:73
 msgid "discord.accountRegistration.admin.unsupportedChannel"
 msgstr "This channel cannot receive the registration panel."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:63
+#: src/features/account-registration/discord/messages.ts:83
+msgid "discord.accountRegistration.liveConfirmation.yesButton"
+msgstr "Yes, this is me"
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:68
 msgid "discord.accountRegistration.admin.permissionDenied"
 msgstr "You do not have permission to post the registration panel."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:98
+#: src/features/account-registration/discord/messages.ts:113
 msgid "discord.accountRegistration.discordAccountTaken"
 msgstr "Your Discord account is already linked to a BFL account."
 
 #. js-lingui-explicit-id
-#: src/features/account-registration/discord/messages.ts:131
+#: src/features/account-registration/discord/messages.ts:201
+msgid "discord.accountRegistration.liveConfirmation.accountNotFound"
+msgstr "Your Discord account is not linked to a BFL account anymore."
+
+#. js-lingui-explicit-id
+#: src/features/account-registration/discord/messages.ts:238
 msgid "discord.accountRegistration.passwordReset.accountNotFound"
 msgstr "Your Discord account is not linked to a BFL account yet."

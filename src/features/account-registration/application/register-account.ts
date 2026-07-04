@@ -1,9 +1,7 @@
 import type { Account, ApiFailure } from "@haxbrasil/haxfootball-api-sdk";
 import type { Result } from "../../../core/result";
-import type {
-  AccountRegistrationGateway,
-  RegisterAccountInput
-} from "./account-registration-gateway";
+import type { RegisterAccountInput } from "./account-registration-gateway";
+import type { AccountRegistrationGateway } from "./account-registration-gateway";
 
 export type RegisterAccountFailure =
   | "name_taken"
@@ -15,7 +13,7 @@ export type RegisterAccountFailure =
 export type RegisterAccountResult = Result<Account, RegisterAccountFailure>;
 
 export async function registerAccount(
-  gateway: AccountRegistrationGateway,
+  gateway: Pick<AccountRegistrationGateway, "createAccount">,
   input: RegisterAccountInput
 ): Promise<RegisterAccountResult> {
   const result = await gateway.createAccount({

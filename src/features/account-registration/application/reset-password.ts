@@ -15,7 +15,7 @@ export type ResetPasswordFailure =
 export type ResetPasswordResult = Result<Account, ResetPasswordFailure>;
 
 export async function resetPassword(
-  gateway: AccountRegistrationGateway,
+  gateway: Pick<AccountRegistrationGateway, "resetPassword">,
   input: ResetPasswordInput
 ): Promise<ResetPasswordResult> {
   const result = await gateway.resetPassword({
