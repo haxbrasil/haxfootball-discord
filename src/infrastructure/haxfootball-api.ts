@@ -3,11 +3,8 @@ import {
   type Account,
   type ApiResult,
   type CreateAccountInput,
-  type FindPlayersByNameQuery,
   type ListAccountsResponse,
-  type ListRoomCommandsQuery,
   type PaginationQuery,
-  queries,
   type UpdateAccountInput
 } from "@haxbrasil/haxfootball-api-sdk";
 import type { Config } from "../config";
@@ -31,6 +28,32 @@ type AccountsResource = {
 
 type AccountListResource = Pick<AccountsResource, "list">;
 
+type FindPlayersByNameQuery = {
+  liveRooms: {
+    nodes: Array<{
+      id: string;
+      room: {
+        name: string | null;
+        gameStatus: string;
+      };
+      players: {
+        nodes: Array<{
+          roomPlayerId: number;
+          name: string;
+          team: string;
+          sessionKind: string | null;
+        }>;
+      };
+    }>;
+  };
+};
+
+type ListRoomCommandsQuery = {
+  liveRoomCommands: {
+    nodes: LiveRegistrationCommand[];
+  };
+};
+
 type LiveResource = {
   query<TResult, TVariables>(input: {
     document: unknown;
@@ -42,6 +65,54 @@ type LiveResource = {
     payload?: unknown;
   }): Promise<ApiResult<LiveRegistrationCommand>>;
 };
+
+const findPlayersByNameQuery = `
+  query FindPlayersByName($playerName: String!) {
+    liveRooms(
+      where: {
+        players: {
+          some: {
+            name: { eq: $playerName }
+          }
+        }
+      }
+    ) {
+      nodes {
+        id
+        room {
+          name
+          gameStatus
+        }
+        players(where: { name: { eq: $playerName } }) {
+          nodes {
+            roomPlayerId
+            name
+            team
+            sessionKind
+          }
+        }
+      }
+    }
+  }
+`;
+
+const listRoomCommandsQuery = `
+  query ListRoomCommands($roomId: UUID!, $first: Int) {
+    liveRoomCommands(where: { roomId: { eq: $roomId } }, first: $first) {
+      nodes {
+        id
+        roomId
+        name
+        payload
+        status
+        result
+        error
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
 
 export function createHaxFootballServices(config: Config) {
   const api = createHaxFootballApiClient({
@@ -72,7 +143,7 @@ export function createAccountRegistrationGateway(
         FindPlayersByNameQuery,
         { playerName: string }
       >({
-        document: queries.findPlayersByName,
+        document: findPlayersByNameQuery,
         variables: { playerName: accountName }
       });
 
@@ -228,7 +299,7 @@ async function waitForLiveRegistrationCommandResult(
       ListRoomCommandsQuery,
       { roomId: string; first: number }
     >({
-      document: queries.listRoomCommands,
+      document: listRoomCommandsQuery,
       variables: {
         roomId: command.roomId,
         first: 20
