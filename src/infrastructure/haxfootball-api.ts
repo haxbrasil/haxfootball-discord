@@ -1,13 +1,14 @@
 import {
-  createHaxFootballApiClient,
   type Account,
   type ApiResult,
   type CreateAccountInput,
+  createHaxFootballApiClient,
   type ListAccountsResponse,
   type PaginationQuery,
   type UpdateAccountInput
 } from "@haxbrasil/haxfootball-api-sdk";
 import type { Config } from "../config";
+import type { Result } from "../core/result";
 import type {
   AccountPasswordResetFailure,
   AccountRegistrationGateway,
@@ -15,7 +16,6 @@ import type {
   LiveRegistrationCommand,
   LiveRegistrationFailure
 } from "../features/account-registration/application/account-registration-gateway";
-import type { Result } from "../core/result";
 import type { DiscordPermissionGateway } from "../features/discord-permissions/application/discord-permission-gateway";
 import { hasDiscordPermission } from "../features/discord-permissions/domain/discord-permissions";
 
@@ -72,7 +72,7 @@ const findPlayersByNameQuery = `
       where: {
         players: {
           some: {
-            name: { eq: $playerName }
+            name: { equals: $playerName }
           }
         }
       }
@@ -83,7 +83,7 @@ const findPlayersByNameQuery = `
           name
           gameStatus
         }
-        players(where: { name: { eq: $playerName } }) {
+        players(where: { name: { equals: $playerName } }) {
           nodes {
             roomPlayerId
             name
